@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Two Articles with Comment Systems</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        .article-box {
+            margin-bottom: 60px;
+            padding: 20px;
+            border: 2px solid #444;
+            border-radius: 10px;
+        }
+
+        .comment-section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 700px;
+        }
+
+        .stats-box {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        .comment-box {
+            border: 1px solid #aaa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .stars span {
+            font-size: 28px;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .stars .selected {
+            color: gold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ARTICLE 1 -->
+    <div class="article-box">
+        <h2>Article 1:Advancements in Computer Science and Emerging Technologies (2025)</h2>
+        <p>The field of Computer Science (CS) is undergoing rapid transformation, driven by innovations in several key areas that are reshaping industries and career paths. A significant trend in 2024 and 2025 is the acceleration of technologies like Artificial Intelligence (AI), quantum computing, and edge computing. </p>
+
+        <div class="comment-section" id="section1">
+
+            <div class="stats-box">
+                <strong>Total Comments:</strong> <span id="totalComments1">0</span><br>
+                <strong>Average Rating:</strong> <span id="avgRating1">0</span>
+            </div>
+
+            <h3>Leave a Comment</h3>
+            <form class="commentForm" data-id="1">
+                <label>Name (required)</label><br>
+                <input type="text" class="name" style="width:100%; padding:8px;">
+                <div class="error nameError"></div><br>
+
+                <label>Email (optional)</label><br>
+                <input type="text" class="email" style="width:100%; padding:8px;">
+                <div class="error emailError"></div><br>
+
+                <label>Comment (required)</label><br>
+                <textarea class="commentText" style="width:100%; padding:8px;" rows="4"></textarea>
+                <div class="error commentError"></div><br>
+
+                <label>Rating (optional)</label>
+                <div class="stars" data-star-id="1">
+                    <span data-value="1">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="5">★</span>
+                </div>
+                <div>Selected Rating: <span class="selectedRating">0</span></div><br>
+
+                <button type="submit" style="padding:10px 20px;">Submit Comment</button>
+            </form>
+
+            <div class="commentList"></div>
+        </div>
+    </div>
+
+
+    <!-- ARTICLE 2 -->
+    <div class="article-box">
+        <h2>Article 2: The Future of AI: How Artificial Intelligence Will Change the World</h2>
+        <p>The future of AI refers to the evolving role of artificial intelligence in shaping how people live, work and interact with their daily lives — driven by advances in generative AI models, AI automation and ethical AI innovation.</p>
+
+        <div class="comment-section" id="section2">
+
+            <div class="stats-box">
+                <strong>Total Comments:</strong> <span id="totalComments2">0</span><br>
+                <strong>Average Rating:</strong> <span id="avgRating2">0</span>
+            </div>
+
+            <h3>Leave a Comment</h3>
+            <form class="commentForm" data-id="2">
+                <label>Name (required)</label><br>
+                <input type="text" class="name" style="width:100%; padding:8px;">
+                <div class="error nameError"></div><br>
+
+                <label>Email (optional)</label><br>
+                <input type="text" class="email" style="width:100%; padding:8px;">
+                <div class="error emailError"></div><br>
+
+                <label>Comment (required)</label><br>
+                <textarea class="commentText" style="width:100%; padding:8px;" rows="4"></textarea>
+                <div class="error commentError"></div><br>
+
+                <label>Rating (optional)</label>
+                <div class="stars" data-star-id="2">
+                    <span data-value="1">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="5">★</span>
+                </div>
+                <div>Selected Rating: <span class="selectedRating">0</span></div><br>
+
+                <button type="submit" style="padding:10px 20px;">Submit Comment</button>
+            </form>
+
+            <div class="commentList"></div>
+        </div>
+    </div>
+
+
+<script>
+    let data = {
+        1: { comments: [], ratings: [], selectedRating: 0 },
+        2: { comments: [], ratings: [], selectedRating: 0 }
+    };
+
+    document.querySelectorAll('.stars span').forEach(star => {
+        star.addEventListener('click', () => {
+            const articleID = star.parentElement.dataset.starId;
+            const val = Number(star.dataset.value);
+
+            data[articleID].selectedRating = val;
+
+            star.parentElement.querySelectorAll('span').forEach(s => {
+                s.classList.remove('selected');
+                if (Number(s.dataset.value) <= val) s.classList.add('selected');
+            });
+
+            star.parentElement.parentElement.querySelector('.selectedRating').innerText = val;
+        });
+    });
+
+    function updateStats(articleID) {
+        const section = document.getElementById(`section${articleID}`);
+
+        section.querySelector(`#totalComments${articleID}`).innerText = data[articleID].comments.length;
+
+        if (data[articleID].ratings.length > 0) {
+            let avg = (
+                data[articleID].ratings.reduce((a, b) => a + b) / data[articleID].ratings.length
+            ).toFixed(1);
+            section.querySelector(`#avgRating${articleID}`).innerText = avg;
+        } else {
+            section.querySelector(`#avgRating${articleID}`).innerText = 0;
+        }
+    }
+
+    function displayComments(articleID) {
+        const section = document.getElementById(`section${articleID}`);
+        const list = section.querySelector('.commentList');
+        list.innerHTML = '';
+
+        data[articleID].comments.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'comment-box';
+            div.innerHTML = `
+                <strong>${c.name}</strong><br>
+                <em>${c.email ? c.email : ''}</em><br><br>
+                ${c.comment}<br><br>
+                <strong>Rating:</strong> ${c.rating > 0 ? c.rating : 'None'}
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    document.querySelectorAll('.commentForm').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const articleID = this.dataset.id;
+
+            const name = this.querySelector('.name').value.trim();
+            const email = this.querySelector('.email').value.trim();
+            const comment = this.querySelector('.commentText').value.trim();
+
+            const nameError = this.querySelector('.nameError');
+            const emailError = this.querySelector('.emailError');
+            const commentError = this.querySelector('.commentError');
+
+            nameError.innerText = '';
+            emailError.innerText = '';
+            commentError.innerText = '';
+
+            let valid = true;
+
+            if (name.length < 2 || name.length > 50) {
+                nameError.innerText = 'Name should be between 2 and 50 characters';
+                valid = false;
+            }
+
+            if (email.length > 0 && !email.includes('@')) {
+                emailError.innerText = 'Please enter a valid email address';
+                valid = false;
+            }
+
+            if (comment.length < 10 || comment.length > 500) {
+                commentError.innerText = 'Comment should be between 10 and 500 characters';
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            const rating = data[articleID].selectedRating;
+
+            data[articleID].comments.push({ name, email, comment, rating });
+            if (rating > 0) data[articleID].ratings.push(rating);
+
+            updateStats(articleID);
+            displayComments(articleID);
+
+            this.reset();
+            data[articleID].selectedRating = 0;
+            this.querySelector('.selectedRating').innerText = 0;
+            this.querySelectorAll('.stars span').forEach(s => s.classList.remove('selected'));
+        });
+    });
+</script>
+
+</body>
+</html>
